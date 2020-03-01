@@ -9,7 +9,7 @@ _Tendril_ is a MIDI Sequence Generator based on 1-D cellular automata. It can _l
 ```bash
 usage: main.py [-h] [--debug] [--png] [--json] [--midi] [--learn S]
                [--generateFrom R] [--seed S] [--scaleNum SN] [--scaleType ST]
-               [--kernelRadius R] [--steps S] [--beatDuration D] [--outdir O]
+               [--kernelRadius R] [--steps L] [--beatDuration D] [--outdir O]
                [--sampler F]
 
 Learn cellular automata from sequences and generate new sequences.
@@ -28,8 +28,8 @@ optional arguments:
   --scaleNum SN     Select scale 0-12
   --scaleType ST    Select scale type: [maj, min]
   --kernelRadius R  The radius of the kernel around the cell.
-  --steps S         The number of total steps of the generated sequence.
-                    (Default: 96)
+  --steps L         The number of total length in steps of the generated
+                    sequence. (Default: 96)
   --beatDuration D  The total duration in ticks for each MIDI beat. (Default:
                     8)
   --outdir O        Output Directory: (default: '.')
