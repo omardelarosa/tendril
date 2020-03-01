@@ -1,6 +1,10 @@
 import numpy as np
 
 
+def noop(states):
+    return states
+
+
 def random_walk_sampler(states):
     """
     Use random-walk strategy for sampling bits from the state space
@@ -39,3 +43,7 @@ def random_walk_sampler(states):
             else:
                 s[cursor] = bit
     return result
+
+
+__all__ = ["noop", "random_walk_sampler"]
+

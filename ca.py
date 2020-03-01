@@ -60,7 +60,7 @@ def run(
 def image_from_states(states, f_name, max_height=64):
     mat = np.array(np.uint8(np.logical_not(states[0:max_height])) * 255)
     im = Image.fromarray(mat, mode="L")
-    print("Saving image: ", f_name)
+    print("saving image: ", f_name)
     im.save(f_name)
     return im
 
@@ -170,12 +170,12 @@ def learn_rules_from_states(states, kernel_radius=1, debug=False):
     a = []
     for ks in k_states:
         rule_str = str(ks)
-        print("rule_str: ", rule_str)
+        # print("rule_str: ", rule_str)
         if rule_str in rule:
             t = targets[rule_str]
-            print("t:", t)
+            # print("t:", t)
             a.append(t)
         else:
             a.append(0)
-    print("a:", a, "rule:", rule)
+    # print("a:", a, "rule:", rule)
     return {"k": k, "rule": a, "k_states": k_states, "confidence_scores": rule}

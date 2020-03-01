@@ -1,11 +1,47 @@
 import argparse
 
-from midi import learn_rule_from_file
+from midi import (
+    learn_rule_from_file,
+    generate_states_from_rule_and_seed,
+    get_rule_from_file,
+    get_seed_from_file,
+)
+from ca import DEFAULT_SEED
+import sampling
 
 
 def cli():
+    DEFAULT_OUTDIR = "."
+
     parser = argparse.ArgumentParser(
         description="Learn cellular automata from sequences and generate new sequences."
+    )
+
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enables additional logging and debug behavior.",
+    )
+
+    parser.add_argument(
+        "--png",
+        default=False,
+        action="store_true",
+        help="Save PNG of the generated states.",
+    )
+
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        default=False,
+        help="Save JSON of the generated states.",
+    )
+
+    parser.add_argument(
+        "--midi",
+        action="store_true",
+        default=False,
+        help="Save MIDI of the generated states.",
     )
 
     parser.add_argument(
@@ -32,10 +68,102 @@ def cli():
         help="Provide an array as a JSON file to be used as a seed state.",
     )
 
+    # Model parameters
+    parser.add_argument(
+        "--scaleNum", metavar="SN", type=int, default=None, help="Select scale 0-12",
+    )
+
+    parser.add_argument(
+        "--scaleType",
+        metavar="ST",
+        type=str,
+        default="maj",
+        help="Select scale type: [maj, min]",
+    )
+
+    parser.add_argument(
+        "--kernelRadius",
+        metavar="R",
+        type=int,
+        default=1,
+        help="The radius of the kernel around the cell.",
+    )
+
+    parser.add_argument(
+        "--outdir",
+        metavar="O",
+        type=str,
+        default=DEFAULT_OUTDIR,
+        help="Output Directory: (default: '{}')".format(DEFAULT_OUTDIR),
+    )
+
+    parser.add_argument(
+        "--sampler",
+        metavar="F",
+        type=str,
+        default=None,
+        help="Choose the sampling function to apply to the resulting cellular automaton sequence. (Options: {})".format(
+            sampling.__all__
+        ),
+    )
+
     args = parser.parse_args()
 
+    # Store as variables for chaining
+    rule = None
+    f_name = None
+
+    debug_mode = False
+
+    if args.debug:
+        debug_mode = True
+
     if args.learn:
-        learn_rule_from_file(args.learn)
+        f_name = args.learn
+        rule, states = learn_rule_from_file(
+            args.learn,
+            scale_num=args.scaleNum,
+            scale_type=args.scaleType,
+            k_radius=args.kernelRadius,
+            save_json=args.json,
+            debug=debug_mode,
+        )
+
+    if args.generateFrom:
+        if args.seed:
+            # Get seed from file
+            seed = get_seed_from_file(args.seed)
+        else:
+            seed = DEFAULT_SEED
+
+        if not rule:
+            # Error if no rule is present
+            if not args.generateFrom:
+                print("Rule must be provided from file or learned.")
+                exit(1)
+            # Get rule from file
+            rule = get_rule_from_file(args.generateFrom)
+
+        if not f_name:
+            f_name = args.generateFrom
+
+        if debug_mode:
+            print("f_name: ", f_name)
+            print("using seed: ", seed)
+            print("using rule: ", rule)
+
+        # If not chaining
+        generate_states_from_rule_and_seed(
+            f_name=f_name,
+            seed=seed,
+            rule=rule,
+            scale_num=args.scaleNum,
+            scale_type=args.scaleType,
+            save_png=args.png,
+            save_json=args.json,
+            save_midi=args.midi,
+            sampler_name=args.sampler,
+        )
 
 
 if __name__ == "__main__":
