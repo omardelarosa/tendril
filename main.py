@@ -5,6 +5,8 @@ from midi import (
     generate_states_from_rule_and_seed,
     get_rule_from_file,
     get_seed_from_file,
+    DEFAULT_BEAT_DURATION,
+    DEFAULT_SEQUENCE_STEPS,
 )
 from ca import DEFAULT_SEED
 import sampling
@@ -90,6 +92,26 @@ def cli():
     )
 
     parser.add_argument(
+        "--steps",
+        metavar="L",
+        type=int,
+        default=DEFAULT_SEQUENCE_STEPS,
+        help="The number of total length in steps of the generated sequence. (Default: {})".format(
+            DEFAULT_SEQUENCE_STEPS
+        ),
+    )
+
+    parser.add_argument(
+        "--beatDuration",
+        metavar="D",
+        type=int,
+        default=DEFAULT_BEAT_DURATION,
+        help="The total duration in ticks for each MIDI beat. (Default: {})".format(
+            DEFAULT_BEAT_DURATION
+        ),
+    )
+
+    parser.add_argument(
         "--outdir",
         metavar="O",
         type=str,
@@ -163,6 +185,8 @@ def cli():
             save_json=args.json,
             save_midi=args.midi,
             sampler_name=args.sampler,
+            steps=args.steps,
+            beat_duration=args.beatDuration,
         )
 
 

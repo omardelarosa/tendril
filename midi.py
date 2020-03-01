@@ -240,6 +240,7 @@ def generate_states_from_rule_and_seed(
     save_png=False,
     save_json=False,
     save_midi=False,
+    beat_duration=DEFAULT_BEAT_DURATION,
 ):
     sc_num = scale_num
     sc_type = scale_type
@@ -281,6 +282,7 @@ def generate_states_from_rule_and_seed(
         print_states(states[0:10])
     mets = metrics(states)
 
+    # g(states, steps, beat_duration)
     if sc_num != None:
         g = lambda x, y, z: generate_pianoroll(x, y, z, scale[0:width])
     else:
@@ -297,6 +299,8 @@ def generate_states_from_rule_and_seed(
             save_json=save_json,
             save_midi=save_midi,
             debug=debug,
+            beat_duration=beat_duration,
+            steps=steps,
         )
     return
 
