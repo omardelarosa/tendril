@@ -1,8 +1,8 @@
 # Tendril
 
-![tendril-algo](docs/tendril.png)
+![tendril-algo](docs/tendril.gif)
 
-_Tendril_ is a MIDI Sequence Generator based on 1-D cellular automata. It can _learn_ new cell update rules using a provided sequence of states in the form of an array or from a piece of music in `.midi` format.
+_Tendril_ is a MIDI Sequence Generator based on 1-D cellular automata. It can learn new cell update rules using a provided sequence of states in the form of an array or from a piece of music in `.midi` format.
 
 ## Usage
 
