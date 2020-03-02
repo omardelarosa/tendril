@@ -63,6 +63,13 @@ def cli():
     )
 
     parser.add_argument(
+        "--generate",
+        default=False,
+        action="store_true",
+        help="After learning a rule, generate a new pattern from the rule.",
+    )
+
+    parser.add_argument(
         "--seed",
         metavar="S",
         type=str,
@@ -151,7 +158,13 @@ def cli():
             debug=debug_mode,
         )
 
-    if args.generateFrom:
+    if args.generate or args.generateFrom:
+        if args.generate and not rule and f_name:
+            print(
+                "This command must be chained and run after learning a cell update rule."
+            )
+            exit(1)
+
         if args.seed:
             # Get seed from file
             seed = get_seed_from_file(args.seed)

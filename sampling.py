@@ -30,6 +30,8 @@ def random_walk_sampler(states):
                 step = -1
             else:
                 step = 1
+            # move once in randomly selected direction
+            j += step
             # find location of first on bit
             while j in range(0, width):
                 if ith_state[j]:
