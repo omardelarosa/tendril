@@ -82,7 +82,7 @@ def generate_all_rules_for_k(out_dir="", k_radius=None, debug=False):
     for r in range(0, num_rules):
         if debug:
             print("Computing rule: {}".format(r))
-        rule = generate_rule_from_k_states(k_states, k_radius, r, debug)
+        rule = generate_rule_from_k_states(k_states, k_radius, r, debug=debug)
         r_str = str(r).zfill(digits_to_pad)
         f_name = "{}/r_{}".format(out_dir, r_str)
         write_rule_to_json(rule, f_name, debug)

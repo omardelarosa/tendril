@@ -174,7 +174,9 @@ def cli():
         else:
             print("--kernelRadius is required to generate rules")
             exit(1)
-        generate_all_rules_for_k(out_dir=args.generateAllRules, k_radius=k_radius)
+        generate_all_rules_for_k(
+            out_dir=args.generateAllRules, k_radius=k_radius, debug=args.debug
+        )
 
     if args.learn:
         f_name = args.learn

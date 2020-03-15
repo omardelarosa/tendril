@@ -264,9 +264,13 @@ def generate_states_from_rule_and_seed(
     a[-1] = 0
 
     k_states = np.array(list(map(np.int64, rule["k_states"])))
+    print("seed: {}, k: {}: k_states: {}".format(seed, k, k_states))
+
     # generate rule from k_states / mask
     r_set = k_states[a.astype(bool)]
+    print("r_set: {}".format(r_set))
     r = lambda x, k: eca(x, k, r_set)
+
     states = run(steps, seed=seed, kernel=k, f=r)
 
     # apply a sampling filter to the states.

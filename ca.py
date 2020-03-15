@@ -200,16 +200,13 @@ def generate_k_states_from_k_radius(kernel_radius):
     return k_states
 
 
-def generate_rule_from_k_states(k_states, kernel_radius, rule_number, debug=False):
+def generate_rule_from_k_states(k_states, kernel_radius, rule_number: int, debug=False):
     k_len = (kernel_radius * 2) + 1
+    k = tens(k_len)
     expected_activation_size = 2 ** k_len  # for 2-state cells
     # Parse bit number
-    bit_str = ""
-
-    if isinstance(rule_number, int):
-        bit_str = "{0:b}".format(rule_number)
-    elif isinstance(rule_number, str):
-        bit_str = rule_number
+    fmt = str(expected_activation_size).zfill(3) + "b"
+    bit_str = format(rule_number, fmt)
 
     activation = np.array(bitarray.bitarray(bit_str).tolist()).astype(int).tolist()
     activation_size = len(activation)
@@ -225,7 +222,7 @@ def generate_rule_from_k_states(k_states, kernel_radius, rule_number, debug=Fals
         )
 
     rule = {
-        "k": kernel_radius,
+        "k": k,
         "rule": activation,
         "k_states": k_states,
         "confidence_scores": {},  # not supported
