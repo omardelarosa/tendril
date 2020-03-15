@@ -3,6 +3,7 @@ from scipy.ndimage import convolve
 from bits import uint8_tuple_to_bin_arr, encode_state
 from math import log, floor
 from PIL import Image
+import bitarray
 
 DEFAULT_SEQUENCE_STEPS = 96
 DEFAULT_SEED_SHAPE = (32,)
@@ -179,3 +180,59 @@ def learn_rules_from_states(states, kernel_radius=1, debug=False):
             a.append(0)
     # print("a:", a, "rule:", rule)
     return {"k": k, "rule": a, "k_states": k_states, "confidence_scores": rule}
+
+
+def generate_k_states_from_k_radius(kernel_radius):
+    k_len = (kernel_radius * 2) + 1
+    # kernel = primes(k_len)
+    k = tens(k_len)
+
+    num_bits_kernel = 2 ** (len(k))
+
+    k_states = [uint8_tuple_to_bin_arr((i,)) for i in range(0, num_bits_kernel)]
+    k_states_trimmed = list(
+        map(lambda x: x[-int(log(num_bits_kernel, 2)) :], [x for x in k_states])
+    )
+    k_states_trimmed.reverse()  # sort by sums
+
+    k_states = list(map(lambda x: np.dot(k, x), k_states_trimmed))
+
+    return k_states
+
+
+def generate_rule_from_k_states(k_states, kernel_radius, rule_number, debug=False):
+    k_len = (kernel_radius * 2) + 1
+    expected_activation_size = 2 ** k_len  # for 2-state cells
+    # Parse bit number
+    bit_str = ""
+
+    if isinstance(rule_number, int):
+        bit_str = "{0:b}".format(rule_number)
+    elif isinstance(rule_number, str):
+        bit_str = rule_number
+
+    activation = np.array(bitarray.bitarray(bit_str).tolist()).astype(int).tolist()
+    activation_size = len(activation)
+
+    if debug:
+        print("bitstr", bit_str, activation)
+    # K len
+    if activation_size > expected_activation_size:
+        print(
+            "Rule size {} does not match expected kernel length of {}".format(
+                activation_size, k_len
+            )
+        )
+
+    rule = {
+        "k": kernel_radius,
+        "rule": activation,
+        "k_states": k_states,
+        "confidence_scores": {},  # not supported
+    }
+
+    if debug:
+        print(rule)
+
+    return rule
+

@@ -9,6 +9,7 @@ from midi import (
     DEFAULT_SEQUENCE_STEPS,
 )
 from ca import DEFAULT_SEED
+from convert import convert, generate_all_rules_for_k
 import sampling
 
 
@@ -67,6 +68,21 @@ def cli():
         default=False,
         action="store_true",
         help="After learning a rule, generate a new pattern from the rule.",
+    )
+
+    parser.add_argument(
+        "--generateAllRules",
+        default=None,
+        type=str,
+        help="Generate all rules for a given set of ECA parameters and dump json to outdir.",
+    )
+
+    parser.add_argument(
+        "--convert",
+        metavar="S",
+        default=None,
+        type=str,
+        help="Convert a target file from png, midi to states.json format",
     )
 
     parser.add_argument(
@@ -146,6 +162,19 @@ def cli():
 
     if args.debug:
         debug_mode = True
+
+    # Just a simple conversion
+    if args.convert:
+        convert(args.convert)
+        exit()
+
+    if args.generateAllRules:
+        if args.kernelRadius:
+            k_radius = args.kernelRadius
+        else:
+            print("--kernelRadius is required to generate rules")
+            exit(1)
+        generate_all_rules_for_k(out_dir=args.generateAllRules, k_radius=k_radius)
 
     if args.learn:
         f_name = args.learn

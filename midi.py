@@ -149,7 +149,6 @@ def write_files_from_states(
         with open(json_file, "w") as json_file:
             json.dump(stats, json_file)
 
-
 def convert_midi_to_state(
     f_name,
     scale_num=None,
