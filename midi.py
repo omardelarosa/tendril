@@ -100,6 +100,8 @@ def squash_piano_roll_to_chromatic_frames(states):
 
 
 def write_states_to_file(states, f_name):
+    print(states)
+    exit(1)
     states_dict = {"states": [np.array(s).astype(int).tolist() for s in states]}
 
     with open(f_name, "w") as json_file:
@@ -139,15 +141,15 @@ def write_files_from_states(
         mt.write(mid_file)
 
     # Write JSON file
-    stats = {
-        "metrics": metrics,
-    }
+    states_serialized = [np.int32(s).tolist() for s in states]
+    states_dict = {"states": states_serialized}
+    # print("states", states)
 
     if json_file:
         print("writing tendril states to: {}".format(json_file))
         # Save state info as json_file
         with open(json_file, "w") as json_file:
-            json.dump(stats, json_file)
+            json.dump(states_dict, json_file)
 
 
 def convert_midi_to_state(
@@ -264,11 +266,10 @@ def generate_states_from_rule_and_seed(
     a[-1] = 0
 
     k_states = np.array(list(map(np.int64, rule["k_states"])))
-    print("seed: {}, k: {}: k_states: {}".format(seed, k, k_states))
 
     # generate rule from k_states / mask
     r_set = k_states[a.astype(bool)]
-    print("r_set: {}".format(r_set))
+
     r = lambda x, k: eca(x, k, r_set)
 
     states = run(steps, seed=seed, kernel=k, f=r)
