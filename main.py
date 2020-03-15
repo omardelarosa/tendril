@@ -152,6 +152,13 @@ def cli():
         ),
     )
 
+    parser.add_argument(
+        "--dontIgnoreOdd",
+        action="store_true",
+        default=False,
+        help="Do not ignore the odd-numbered bit when present in rule.",
+    )
+
     args = parser.parse_args()
 
     # Store as variables for chaining
@@ -231,6 +238,7 @@ def cli():
             sampler_name=args.sampler,
             steps=args.steps,
             beat_duration=args.beatDuration,
+            dont_ignore_odd=args.dontIgnoreOdd,
         )
 
 

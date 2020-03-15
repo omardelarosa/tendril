@@ -26,7 +26,8 @@ do
         --json \
         --png \
         --sampler=noop \
-        --steps=$NUM_STEPS
+        --steps=$NUM_STEPS \
+        --dontIgnoreOdd
 
     # # learn rule from the generated states
     python main.py \

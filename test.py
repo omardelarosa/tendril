@@ -1,5 +1,6 @@
 import glob
 import json
+import re
 from bitarray import bitarray, util
 
 TEST_BASE = "./test_data"
@@ -7,8 +8,9 @@ TEST_DIR = "{}/eca_8bit".format(TEST_BASE)
 TENDRIL_SUFFIX = ".tendril_states.json"
 RULE_SUFFIX = ".rule.json"
 TEST_RULE_GLOB = "{}/r_*{}.rule.json".format(TEST_DIR, TENDRIL_SUFFIX)
-
+STATES_FILE_GLOB = "{}/r_*.rule.json{}".format(TEST_DIR, TENDRIL_SUFFIX)
 files = glob.glob(TEST_RULE_GLOB)
+states_files = glob.glob(STATES_FILE_GLOB)
 
 
 def parse_file(f_name):
@@ -31,6 +33,35 @@ def write_results(results):
         json.dump(results, f)
 
 
+def check_result(result, states_dict):
+    r_expected = result["expected"]
+    r_actual = result["actual"]
+    # Compare for int
+    if r_expected == r_actual:
+        return True
+    # Check for ambiguous states
+    else:
+        s_expected = states_dict[r_expected]
+        s_actual = states_dict[r_actual]
+        # Ambiguous states
+        if s_expected == s_actual:
+            return True
+        else:
+            return False
+
+
+# Get all states by rule:
+
+states_by_rule_int = {}
+
+for f in states_files:
+    d = parse_file(f)
+    m = re.findall(r"r_\d+", f)
+    if m:
+        n = int(m[0].split("_")[1])
+    # print(f)
+    states_by_rule_int[n] = d["states"]
+
 results = {}
 
 for f in files:
@@ -51,12 +82,6 @@ for f in files:
         "data": d2,
     }
 
-    # print("files: {}, {}".format(f1, f2))
-    # print("\t: {} = {} == {}".format(r1i == r2i, r1i, r2i))
-    # print("generated", f1, d1["rule"])
-    # print("original", f2, d2["rule"])
-
-# print(results)
 write_results(results)
 
 # generate score
@@ -64,7 +89,7 @@ total = len(results.keys())
 matched = 0
 for k in results:
     result = results[k]
-    if result["expected"] == result["actual"]:
+    if check_result(result, states_by_rule_int):
         matched += 1
 
 print("score: {}".format(matched / total))

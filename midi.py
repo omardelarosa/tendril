@@ -243,6 +243,7 @@ def generate_states_from_rule_and_seed(
     save_json=False,
     save_midi=False,
     beat_duration=DEFAULT_BEAT_DURATION,
+    dont_ignore_odd=False,
 ):
     sc_num = scale_num
     sc_type = scale_type
@@ -263,7 +264,8 @@ def generate_states_from_rule_and_seed(
 
     # THIS IS SUPER IMPORTANT TO GETTING GOOD RESULTS.  It prevents [0,0,0] -> 1 transitions which clutter up CA
     # Flip final bit
-    # a[-1] = 0
+    if not dont_ignore_odd:
+        a[-1] = 0
 
     k_states = np.array(list(map(np.int64, rule["k_states"])))
 
