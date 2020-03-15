@@ -77,3 +77,13 @@ python main.py \
     --sampler=random_walk_sampler\
     --scaleNum=0
 ```
+
+### Generate All Rules for a Given Rule Space
+
+For a given `kernel_radius` (i.e. the neighborhood size of a cellular automata rule), all rules can be generated in one command.
+
+```bash
+python main.py \
+    --generateAllRules examples/rules/eca_8bit \
+    --kernelRadius=1
+```
