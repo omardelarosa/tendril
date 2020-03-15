@@ -263,7 +263,7 @@ def generate_states_from_rule_and_seed(
 
     # THIS IS SUPER IMPORTANT TO GETTING GOOD RESULTS.  It prevents [0,0,0] -> 1 transitions which clutter up CA
     # Flip final bit
-    a[-1] = 0
+    # a[-1] = 0
 
     k_states = np.array(list(map(np.int64, rule["k_states"])))
 

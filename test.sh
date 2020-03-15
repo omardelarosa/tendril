@@ -1,17 +1,23 @@
 #!/bin/bash
 
+DEFAULT_TEST_OUT_DIR="test_data"
+DEFAULT_NUM_STEPS_IN_SEQUENCE=32
+
+TEST_OUT_DIR="${1:-$DEFAULT_TEST_OUT_DIR}"
+NUM_STEPS="${2:-$DEFAULT_NUM_STEPS_IN_SEQUENCE}"
+
 # Make directories for output
-rm -rf test_data
-mkdir test_data
-mkdir test_data/eca_8bit
+rm -rf $TEST_OUT_DIR
+mkdir $TEST_OUT_DIR
+mkdir $TEST_OUT_DIR/eca_8bit
 
 # Generate all 256 ECA rules
 python main.py \
-    --generateAllRules test_data/eca_8bit \
+    --generateAllRules $TEST_OUT_DIR/eca_8bit \
     --kernelRadius=1
 
 # Generate states from each rule
-for f in test_data/eca_8bit/*.rule.json
+for f in $TEST_OUT_DIR/eca_8bit/*.rule.json
 do
     # # generate states from rule
     python main.py \
@@ -20,7 +26,7 @@ do
         --json \
         --png \
         --sampler=noop \
-        --steps=32
+        --steps=$NUM_STEPS
 
     # # learn rule from the generated states
     python main.py \
@@ -28,3 +34,6 @@ do
         --json \
         --kernelRadius=1
 done
+
+# Test all the results
+python test.py
