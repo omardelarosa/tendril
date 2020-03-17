@@ -100,8 +100,8 @@ def squash_piano_roll_to_chromatic_frames(states):
 
 
 def write_states_to_file(states, f_name):
-    print(states)
-    exit(1)
+    # print(states)
+    # exit(1)
     states_dict = {"states": [np.array(s).astype(int).tolist() for s in states]}
 
     with open(f_name, "w") as json_file:

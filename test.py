@@ -33,7 +33,7 @@ def write_results(results):
         json.dump(results, f)
 
 
-def check_result(result, states_dict):
+def check_result(result, states_dict, check_ambiguous=True):
     r_expected = result["expected"]
     r_actual = result["actual"]
     # Compare for int
@@ -41,13 +41,16 @@ def check_result(result, states_dict):
         return True
     # Check for ambiguous states
     else:
-        s_expected = states_dict[r_expected]
-        s_actual = states_dict[r_actual]
-        # Ambiguous states
-        if s_expected == s_actual:
-            return True
-        else:
+        if not check_ambiguous:
             return False
+        else:
+            s_expected = states_dict[r_expected]
+            s_actual = states_dict[r_actual]
+            # Ambiguous states
+            if s_expected == s_actual:
+                return True
+            else:
+                return False
 
 
 # Get all states by rule:
@@ -87,9 +90,19 @@ write_results(results)
 # generate score
 total = len(results.keys())
 matched = 0
+ambiguous_patterns = 0
+
+# count matches
 for k in results:
     result = results[k]
     if check_result(result, states_by_rule_int):
         matched += 1
 
+# count ambiguous patterns:
+for k in results:
+    result = results[k]
+    if not check_result(result, states_by_rule_int, check_ambiguous=False):
+        ambiguous_patterns += 1
+
+print("ambiguous_pattern_rate: {}".format(ambiguous_patterns / total))
 print("score: {}".format(matched / total))
